@@ -337,7 +337,7 @@
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaption;
-            ClientSize = new Size(569, 579);
+            ClientSize = new Size(561, 579);
             Controls.Add(txtresult1);
             Controls.Add(txtinput1);
             Controls.Add(lbltitle);

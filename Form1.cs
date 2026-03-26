@@ -21,6 +21,8 @@
         private long _repeatNumerator = 0;
         private long _repeatDenominator = 1;
         private int _repeatCount = 0;
+        // whether a leading zero has been shown for the current operand
+        private bool _leadingZeroDisplayed = false;
 
 
         public Form1()
@@ -301,9 +303,29 @@
                 return; // 결과가 표시된 상태에서는 추가 입력 금지
 
             // 처음 입력 시 '0'이 들어가지 않도록 처리
-            if (d == "0" && string.IsNullOrEmpty(_currentInput))
-                return;
+            if (string.IsNullOrEmpty(_currentInput))
+            {
+                if (d == "0")
+                {
+                    // Show leading zero only once in txtresult1, do not append to txtinput1 yet
+                    if (!_leadingZeroDisplayed)
+                    {
+                        txtresult1.Text = "0";
+                        _leadingZeroDisplayed = true;
+                    }
+                    return;
+                }
 
+                // first non-zero digit: replace leading zero in result and append to both
+                _currentInput = d;
+                _expression += d;
+                txtinput1.Text = _expression;
+                txtresult1.Text = _currentInput;
+                _leadingZeroDisplayed = false;
+                return;
+            }
+
+            // normal append when current input is non-empty
             _currentInput += d;
             _expression += d;
             txtinput1.Text = _expression;
@@ -331,6 +353,7 @@
                 _currentInput = string.Empty;
                 // show the first operand (0) in result box
                 txtresult1.Text = operand1.ToString();
+                _leadingZeroDisplayed = true;
                 return;
             }
 
