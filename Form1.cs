@@ -124,49 +124,15 @@
                         case "/":
                             if (_lastOperand2 == 0)
                                 return;
-                            // compute decimal expansion digits
-                            var intPartRep = operand1 / _lastOperand2;
-                            var remRep = Math.Abs(operand1 % _lastOperand2);
-                            var decimalsRep = "";
-                            var rem2 = remRep;
-                            for (int i = 0; i < 10 && rem2 != 0; i++)
-                            {
-                                rem2 *= 10;
-                                var digit = (int)(rem2 / _lastOperand2);
-                                decimalsRep += digit.ToString();
-                                rem2 = rem2 % _lastOperand2;
-                            }
-                            int upToRep = 0;
-                            if (decimalsRep.Length == 0)
-                                upToRep = 0;
-                            else
-                            {
-                                var idx0 = decimalsRep.IndexOf('0');
-                                if (idx0 == -1)
-                                    upToRep = Math.Min(decimalsRep.Length, 5);
-                                else
-                                    upToRep = Math.Min(idx0, 5); // stop before first zero
-                            }
-                            string sRep;
-                            if (upToRep == 0)
-                                sRep = intPartRep.ToString();
-                            else
-                                sRep = intPartRep.ToString() + "." + decimalsRep.Substring(0, upToRep);
-
-                            txtinput1.Text = operand1.ToString() + DisplayOperator(_lastOperator) + _lastOperand2.ToString() + "=" + sRep;
-                            txtresult1.Text = sRep;
-                            // update operand1 to integer approximation
-                            try { operand1 = int.Parse(sRep.Split('.')[0]); } catch { }
-                            _currentInput = operand1.ToString();
-                            _expression = txtinput1.Text;
-                            _isResultDisplayed = true;
-                            return;
+                            // integer division for repeated '=' behavior
+                            operand1 = operand1 / _lastOperand2;
+                            break;
                         default:
                             return;
                     }
 
                     // For + - * repeated, update displays as integers
-                    var exprRep = operand1.ToString() + _lastOperator + _lastOperand2.ToString() + "=" + operand1.ToString();
+                    var exprRep = operand1.ToString() + DisplayOperator(_lastOperator) + _lastOperand2.ToString() + "=" + operand1.ToString();
                     txtinput1.Text = exprRep;
                     txtresult1.Text = operand1.ToString();
                     _currentInput = operand1.ToString();
@@ -196,7 +162,7 @@
                 return;
             }
 
-            // Parse second operand using int.Parse (입력은 숫자만 허용되어 있으므로 try-catch로 처리)
+            // Parse second operand using int.Parse
             try
             {
                 operand2 = int.Parse(_currentInput);
@@ -222,7 +188,7 @@
                     // division by zero: do nothing
                     if (operand2 == 0)
                         return;
-                    // integer division with decimal trimming later; compute double result for display
+                    // integer division (truncate)
                     result = operand1 / operand2;
                     break;
                 default:
@@ -230,27 +196,12 @@
                     break;
             }
 
-            // Display result. For division, show decimal up to 5 places trimmed; otherwise integer
-            if (oprinput == "/")
-            {
-                var div = (double)operand1 / operand2;
-                var s = div.ToString("F5");
-                s = s.TrimEnd('0');
-                if (s.EndsWith('.')) s = s.TrimEnd('.');
-                var exprDiv = operand1.ToString() + DisplayOperator(oprinput) + operand2.ToString() + "=" + s;
-                txtinput1.Text = exprDiv;
-                txtresult1.Text = s;
-                _currentInput = s;
-                _expression = exprDiv;
-            }
-            else
-            {
+            // Display integer result
                 var expr = operand1.ToString() + DisplayOperator(oprinput) + operand2.ToString() + "=" + result.ToString();
                 txtinput1.Text = expr;
                 txtresult1.Text = result.ToString();
                 _currentInput = result.ToString();
                 _expression = expr;
-            }
             // save last operation for repeated '=' behavior
             var savedOp = oprinput;
             _lastOperator = savedOp;
