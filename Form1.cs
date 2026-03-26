@@ -244,6 +244,10 @@
             if (_isResultDisplayed)
                 return; // 결과가 표시된 상태에서는 추가 입력 금지
 
+            // 처음 입력 시 '0'이 들어가지 않도록 처리
+            if (d == "0" && string.IsNullOrEmpty(_currentInput))
+                return;
+
             _currentInput += d;
             _expression += d;
             txtinput1.Text = _expression;
@@ -257,6 +261,20 @@
             {
                 // allow operator after result: use displayed result as operand1
                 _isResultDisplayed = false;
+            }
+
+            // If operator pressed first (no current input and empty expression),
+            // treat first operand as 0 and show "0<op>" in input display.
+            if (string.IsNullOrEmpty(_currentInput) && string.IsNullOrEmpty(_expression))
+            {
+                operand1 = 0;
+                oprinput = op;
+                _expression = "0" + DisplayOperator(op);
+                txtinput1.Text = _expression;
+                // keep current input empty, ready for second operand
+                _currentInput = string.Empty;
+                txtresult1.Text = string.Empty;
+                return;
             }
 
             // Prevent duplicate operator: if operator already set and no current input, replace it
