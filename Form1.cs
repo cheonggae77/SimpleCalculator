@@ -30,6 +30,136 @@
             InitializeComponent();
         }
 
+        // Evaluate arithmetic expression in _expression (display form with × and ÷ allowed)
+        // Returns (success, value). On divide-by-zero returns (false, 0) and sets error state.
+        private (bool ok, int value) EvaluateExpression(string exprDisplay)
+        {
+            if (string.IsNullOrWhiteSpace(exprDisplay))
+                return (false, 0);
+
+            // normalize display operators to internal
+            var expr = exprDisplay.Replace('×', '*').Replace('÷', '/');
+            // remove any trailing = or result part
+            var eqIndex = expr.IndexOf('=');
+            if (eqIndex >= 0)
+                expr = expr.Substring(0, eqIndex);
+
+            // Tokenize (handle unary minus)
+            var tokens = new List<string>();
+            for (int i = 0; i < expr.Length; i++)
+            {
+                var c = expr[i];
+                if (char.IsWhiteSpace(c))
+                    continue;
+                if (char.IsDigit(c))
+                {
+                    var j = i;
+                    while (j < expr.Length && char.IsDigit(expr[j])) j++;
+                    tokens.Add(expr.Substring(i, j - i));
+                    i = j - 1;
+                    continue;
+                }
+                if (c == '+' || c == '*' || c == '/' )
+                {
+                    tokens.Add(c.ToString());
+                    continue;
+                }
+                if (c == '-')
+                {
+                    // unary if at start or after '(' or other operator
+                    if (tokens.Count == 0 || tokens.Last() == "(" || tokens.Last() == "+" || tokens.Last() == "-" || tokens.Last() == "*" || tokens.Last() == "/")
+                    {
+                        // treat unary minus as 0 - number: push 0 and '-'
+                        tokens.Add("0");
+                        tokens.Add("-");
+                    }
+                    else
+                    {
+                        tokens.Add("-");
+                    }
+                    continue;
+                }
+                if (c == '(' || c == ')')
+                {
+                    tokens.Add(c.ToString());
+                    continue;
+                }
+                // unknown char -> fail
+                return (false, 0);
+            }
+
+            // Shunting-yard to RPN
+            var output = new List<string>();
+            var ops = new Stack<string>();
+            int Prec(string o) => o == "+" || o == "-" ? 1 : 2;
+            foreach (var tk in tokens)
+            {
+                if (int.TryParse(tk, out _))
+                {
+                    output.Add(tk);
+                    continue;
+                }
+                if (tk == "+" || tk == "-" || tk == "*" || tk == "/")
+                {
+                    while (ops.Count > 0 && ops.Peek() != "(" && (Prec(ops.Peek()) >= Prec(tk)))
+                    {
+                        output.Add(ops.Pop());
+                    }
+                    ops.Push(tk);
+                    continue;
+                }
+                if (tk == "(")
+                {
+                    ops.Push(tk);
+                    continue;
+                }
+                if (tk == ")")
+                {
+                    while (ops.Count > 0 && ops.Peek() != "(")
+                        output.Add(ops.Pop());
+                    if (ops.Count == 0) return (false, 0); // mismatched paren
+                    ops.Pop(); // pop '('
+                    continue;
+                }
+            }
+            while (ops.Count > 0)
+            {
+                var o = ops.Pop();
+                if (o == "(" || o == ")") return (false, 0);
+                output.Add(o);
+            }
+
+            // Evaluate RPN
+            var st = new Stack<long>();
+            foreach (var tk in output)
+            {
+                if (int.TryParse(tk, out var n))
+                {
+                    st.Push(n);
+                    continue;
+                }
+                if (st.Count < 2) return (false, 0);
+                var b = st.Pop();
+                var a = st.Pop();
+                long r = 0;
+                switch (tk)
+                {
+                    case "+": r = a + b; break;
+                    case "-": r = a - b; break;
+                    case "*": r = a * b; break;
+                    case "/":
+                        if (b == 0)
+                            return (false, 0);
+                        r = a / b; break;
+                    default: return (false, 0);
+                }
+                st.Push(r);
+            }
+            if (st.Count != 1) return (false, 0);
+            var final = (int)st.Pop();
+            return (true, final);
+        }
+
 
 
         private void btnnum0_Click(object sender, EventArgs e)
@@ -105,113 +235,78 @@
         // '=' 버튼: 두 피연산자의 정수 덧셈 수행(요구사항에 따라 Int 변환)
         private void btneq_Click(object sender, EventArgs e)
         {
-            // If no operator set, but have a saved last operation and result displayed,
-            // apply repeated-equals behavior: reapply lastOperator with lastOperand2
-            if (string.IsNullOrEmpty(oprinput))
+            // If an expression has been built (supports multiple operators and parentheses),
+            // evaluate the full expression using the expression evaluator so things like
+            // "8*(3+4)" work correctly. The expression is stored in `_expression` (display
+            // form, may contain ×/÷). If no full expression is present, try to build one
+            // from operand1/oprinput/_currentInput. Fall back to repeated-equals behavior
+            // only if nothing else is available.
+            string exprDisplay = null;
+
+            if (!string.IsNullOrEmpty(_expression))
             {
+                // If _expression already contains a previous result like "...=...", strip it
+                var idx = _expression.IndexOf('=');
+                exprDisplay = idx >= 0 ? _expression.Substring(0, idx) : _expression;
+            }
+            else if (!string.IsNullOrEmpty(_currentInput) && !string.IsNullOrEmpty(oprinput))
+            {
+                exprDisplay = operand1.ToString() + DisplayOperator(oprinput) + _currentInput;
+            }
+            else if (!string.IsNullOrEmpty(_currentInput))
+            {
+                exprDisplay = _currentInput;
+            }
+
+            if (string.IsNullOrEmpty(exprDisplay))
+            {
+                // No expression to evaluate; if we have a saved last operation, apply repeated-equals
                 if (_hasLastOperation)
                 {
-                    // operand1 currently holds the last result
                     switch (_lastOperator)
                     {
-                        case "+":
-                            operand1 = operand1 + _lastOperand2;
-                            break;
-                        case "-":
-                            operand1 = operand1 - _lastOperand2;
-                            break;
-                        case "*":
-                            operand1 = operand1 * _lastOperand2;
-                            break;
+                        case "+": operand1 = operand1 + _lastOperand2; break;
+                        case "-": operand1 = operand1 - _lastOperand2; break;
+                        case "*": operand1 = operand1 * _lastOperand2; break;
                         case "/":
                             if (_lastOperand2 == 0)
                                 return;
-                            // integer division for repeated '=' behavior
-                            operand1 = operand1 / _lastOperand2;
-                            break;
-                        default:
-                            return;
+                            operand1 = operand1 / _lastOperand2; break;
+                        default: return;
                     }
 
-                    // For + - * repeated, update displays as integers
                     var exprRep = operand1.ToString() + DisplayOperator(_lastOperator) + _lastOperand2.ToString() + "=" + operand1.ToString();
                     txtinput1.Text = exprRep;
                     txtresult1.Text = operand1.ToString();
                     _currentInput = operand1.ToString();
                     _expression = exprRep;
                     _isResultDisplayed = true;
-                    return;
                 }
-
-                // no operator and no last operation: do nothing
                 return;
             }
 
-            // If current input is empty (operator was last input), do not copy operand1 to operand2.
-            // But if a leading zero was shown and operator is division, show an error message.
-            if (string.IsNullOrEmpty(_currentInput))
+            // Evaluate the constructed expression
+            var (ok, val) = EvaluateExpression(exprDisplay);
+            if (!ok)
             {
-                if (_leadingZeroShown && oprinput == "/")
-                {
-                    txtresult1.Text = "0으로 나눌수 없습니다.";
-                    txtresult1.ForeColor = System.Drawing.Color.Red;
-                    _isError = true;
-                }
-                // otherwise do nothing
+                txtresult1.Text = "0으로 나눌수 없습니다.";
+                txtresult1.ForeColor = System.Drawing.Color.Red;
+                _isError = true;
                 return;
             }
 
-            // Parse second operand using int.Parse
-            try
-            {
-                operand2 = int.Parse(_currentInput);
-            }
-            catch
-            {
-                operand2 = 0;
-            }
+            // Show full expression with result in input box, and only the numeric result in result box
+            txtinput1.Text = exprDisplay + "=" + val.ToString();
+            txtresult1.Text = val.ToString();
+            txtresult1.ForeColor = val < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Black;
 
-            // Perform operation
-            switch (oprinput)
-            {
-                case "+":
-                    result = operand1 + operand2;
-                    break;
-                case "-":
-                    result = operand1 - operand2;
-                    break;
-                case "*":
-                    result = operand1 * operand2;
-                    break;
-                case "/":
-                    // division by zero: do nothing
-                    if (operand2 == 0)
-                        return;
-                    // integer division (truncate)
-                    result = operand1 / operand2;
-                    break;
-                default:
-                    result = operand1 + operand2;
-                    break;
-            }
-
-            // Display integer result
-                var expr = operand1.ToString() + DisplayOperator(oprinput) + operand2.ToString() + "=" + result.ToString();
-                txtinput1.Text = expr;
-                txtresult1.Text = result.ToString();
-                _currentInput = result.ToString();
-                _expression = expr;
-            // save last operation for repeated '=' behavior
-            var savedOp = oprinput;
-            _lastOperator = savedOp;
-            _lastOperand2 = operand2;
-            _hasLastOperation = true;
-
+            // Update internal state
+            _expression = txtinput1.Text;
+            _currentInput = val.ToString();
             oprinput = string.Empty;
-            operand1 = result;
+            operand1 = val;
             _isResultDisplayed = true;
-            // reset repeat state
-            _repeatCount = 0;
+            _hasLastOperation = false;
         }
 
         private void btnC_Click(object sender, EventArgs e)
@@ -337,6 +432,23 @@
             txtresult1.Text = _currentInput;
         }
 
+        // Append a parenthesis to expression and show position in txtinput1
+        private void AppendParen(char p)
+        {
+            // If currently showing result, reset to allow new expression
+            if (_isResultDisplayed)
+            {
+                _currentInput = string.Empty;
+                _expression = string.Empty;
+                _isResultDisplayed = false;
+            }
+
+            _expression += p;
+            txtinput1.Text = _expression;
+            // show paren in result box as well for visibility
+            txtresult1.Text = p.ToString();
+        }
+
         // Helper: set operator; store operand1 and append operator to expression
         private void SetOperator(string op)
         {
@@ -448,10 +560,37 @@
                 return;
             }
 
+            // Parentheses input from keyboard
+            if (e.KeyChar == '(' || e.KeyChar == ')')
+            {
+                AppendParen(e.KeyChar);
+                e.Handled = true;
+                return;
+            }
+
             if (e.KeyChar == '\r' || e.KeyChar == '=')
             {
-                // Enter or '=' -> execute
-                btneq_Click(this, EventArgs.Empty);
+                // Enter or '=' -> evaluate full expression (supports parentheses)
+                var expr = txtinput1.Text;
+                // if user hasn't typed expression, try using constructed expression
+                if (string.IsNullOrEmpty(expr) && !string.IsNullOrEmpty(_expression))
+                    expr = _expression;
+
+                var (ok, val) = EvaluateExpression(expr);
+                if (!ok)
+                {
+                    // if divide by zero or parse error, show message
+                    txtresult1.Text = "0으로 나눌수 없습니다.";
+                    txtresult1.ForeColor = System.Drawing.Color.Red;
+                    _isError = true;
+                }
+                else
+                {
+                    txtresult1.Text = val.ToString();
+                    txtresult1.ForeColor = val < 0 ? System.Drawing.Color.Red : System.Drawing.Color.Black;
+                    txtinput1.Text = expr + "=" + val.ToString();
+                    _expression = txtinput1.Text;
+                }
                 e.Handled = true;
                 return;
             }
