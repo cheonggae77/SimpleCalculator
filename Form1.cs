@@ -329,7 +329,8 @@
                 txtinput1.Text = _expression;
                 // keep current input empty, ready for second operand
                 _currentInput = string.Empty;
-                txtresult1.Text = string.Empty;
+                // show the first operand (0) in result box
+                txtresult1.Text = operand1.ToString();
                 return;
             }
 
@@ -363,7 +364,8 @@
             txtinput1.Text = _expression;
             // 현재 입력 초기화해서 두번째 피연산자 입력 준비
             _currentInput = string.Empty;
-            txtresult1.Text = string.Empty;
+            // keep showing last entered operand in txtresult1
+            txtresult1.Text = operand1.ToString();
         }
 
         // Map internal operator to display symbol
