@@ -13,6 +13,14 @@
         private string _expression = string.Empty;
         // 결과가 표시된 상태인지 (이때는 입력 막음)
         private bool _isResultDisplayed = false;
+        // last operation for repeat-equals behavior
+        private string _lastOperator = string.Empty;
+        private int _lastOperand2;
+        private bool _hasLastOperation = false;
+        // for repeated division as fraction: numerator fixed, denominator grows operand2^k
+        private long _repeatNumerator = 0;
+        private long _repeatDenominator = 1;
+        private int _repeatCount = 0;
 
 
         public Form1()
@@ -95,9 +103,81 @@
         // '=' 버튼: 두 피연산자의 정수 덧셈 수행(요구사항에 따라 Int 변환)
         private void btneq_Click(object sender, EventArgs e)
         {
-            // If no operator set, do nothing (like Windows calc)
+            // If no operator set, but have a saved last operation and result displayed,
+            // apply repeated-equals behavior: reapply lastOperator with lastOperand2
             if (string.IsNullOrEmpty(oprinput))
+            {
+                if (_hasLastOperation)
+                {
+                    // operand1 currently holds the last result
+                    switch (_lastOperator)
+                    {
+                        case "+":
+                            operand1 = operand1 + _lastOperand2;
+                            break;
+                        case "-":
+                            operand1 = operand1 - _lastOperand2;
+                            break;
+                        case "*":
+                            operand1 = operand1 * _lastOperand2;
+                            break;
+                        case "/":
+                            if (_lastOperand2 == 0)
+                                return;
+                            // compute decimal expansion digits
+                            var intPartRep = operand1 / _lastOperand2;
+                            var remRep = Math.Abs(operand1 % _lastOperand2);
+                            var decimalsRep = "";
+                            var rem2 = remRep;
+                            for (int i = 0; i < 10 && rem2 != 0; i++)
+                            {
+                                rem2 *= 10;
+                                var digit = (int)(rem2 / _lastOperand2);
+                                decimalsRep += digit.ToString();
+                                rem2 = rem2 % _lastOperand2;
+                            }
+                            int upToRep = 0;
+                            if (decimalsRep.Length == 0)
+                                upToRep = 0;
+                            else
+                            {
+                                var idx0 = decimalsRep.IndexOf('0');
+                                if (idx0 == -1)
+                                    upToRep = Math.Min(decimalsRep.Length, 5);
+                                else
+                                    upToRep = Math.Min(idx0, 5); // stop before first zero
+                            }
+                            string sRep;
+                            if (upToRep == 0)
+                                sRep = intPartRep.ToString();
+                            else
+                                sRep = intPartRep.ToString() + "." + decimalsRep.Substring(0, upToRep);
+
+                            txtinput1.Text = operand1.ToString() + DisplayOperator(_lastOperator) + _lastOperand2.ToString() + "=" + sRep;
+                            txtresult1.Text = sRep;
+                            // update operand1 to integer approximation
+                            try { operand1 = int.Parse(sRep.Split('.')[0]); } catch { }
+                            _currentInput = operand1.ToString();
+                            _expression = txtinput1.Text;
+                            _isResultDisplayed = true;
+                            return;
+                        default:
+                            return;
+                    }
+
+                    // For + - * repeated, update displays as integers
+                    var exprRep = operand1.ToString() + _lastOperator + _lastOperand2.ToString() + "=" + operand1.ToString();
+                    txtinput1.Text = exprRep;
+                    txtresult1.Text = operand1.ToString();
+                    _currentInput = operand1.ToString();
+                    _expression = exprRep;
+                    _isResultDisplayed = true;
+                    return;
+                }
+
+                // no operator and no last operation: do nothing
                 return;
+            }
 
             // If current input is empty (operator was last input), show last operand as result
             if (string.IsNullOrEmpty(_currentInput))
@@ -111,6 +191,8 @@
                 oprinput = string.Empty;
                 operand1 = result;
                 _isResultDisplayed = true;
+                // clear last operation
+                _hasLastOperation = false;
                 return;
             }
 
@@ -140,6 +222,7 @@
                     // division by zero: do nothing
                     if (operand2 == 0)
                         return;
+                    // integer division with decimal trimming later; compute double result for display
                     result = operand1 / operand2;
                     break;
                 default:
@@ -147,16 +230,38 @@
                     break;
             }
 
-            // Display without spaces, show × and ÷ symbols for * and /
-            var expr = operand1.ToString() + DisplayOperator(oprinput) + operand2.ToString() + "=" + result.ToString();
-            txtinput1.Text = expr;
-            txtresult1.Text = result.ToString();
+            // Display result. For division, show decimal up to 5 places trimmed; otherwise integer
+            if (oprinput == "/")
+            {
+                var div = (double)operand1 / operand2;
+                var s = div.ToString("F5");
+                s = s.TrimEnd('0');
+                if (s.EndsWith('.')) s = s.TrimEnd('.');
+                var exprDiv = operand1.ToString() + DisplayOperator(oprinput) + operand2.ToString() + "=" + s;
+                txtinput1.Text = exprDiv;
+                txtresult1.Text = s;
+                _currentInput = s;
+                _expression = exprDiv;
+            }
+            else
+            {
+                var expr = operand1.ToString() + DisplayOperator(oprinput) + operand2.ToString() + "=" + result.ToString();
+                txtinput1.Text = expr;
+                txtresult1.Text = result.ToString();
+                _currentInput = result.ToString();
+                _expression = expr;
+            }
+            // save last operation for repeated '=' behavior
+            var savedOp = oprinput;
+            _lastOperator = savedOp;
+            _lastOperand2 = operand2;
+            _hasLastOperation = true;
 
-            _currentInput = result.ToString();
-            _expression = expr;
             oprinput = string.Empty;
             operand1 = result;
             _isResultDisplayed = true;
+            // reset repeat state
+            _repeatCount = 0;
         }
 
         private void btnC_Click(object sender, EventArgs e)
@@ -364,6 +469,14 @@
             {
                 // Enter or '=' -> execute
                 btneq_Click(this, EventArgs.Empty);
+                e.Handled = true;
+                return;
+            }
+
+            // ESC -> clear
+            if ((int)e.KeyChar == 27)
+            {
+                btnC_Click(this, EventArgs.Empty);
                 e.Handled = true;
                 return;
             }
