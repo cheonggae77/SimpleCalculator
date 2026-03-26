@@ -77,6 +77,21 @@
             SetOperator("+");
         }
 
+        private void btnminus_Click(object sender, EventArgs e)
+        {
+            SetOperator("-");
+        }
+
+        private void btnmultiplied_Click(object sender, EventArgs e)
+        {
+            SetOperator("*");
+        }
+
+        private void btndivied_Click(object sender, EventArgs e)
+        {
+            SetOperator("/");
+        }
+
         // '=' 버튼: 두 피연산자의 정수 덧셈 수행(요구사항에 따라 Int 변환)
         private void btneq_Click(object sender, EventArgs e)
         {
@@ -88,7 +103,7 @@
             if (string.IsNullOrEmpty(_currentInput))
             {
                 result = operand1;
-                var exprEmptyOperand = operand1.ToString() + oprinput + "=" + result.ToString();
+                var exprEmptyOperand = operand1.ToString() + DisplayOperator(oprinput) + "=" + result.ToString();
                 txtinput1.Text = exprEmptyOperand;
                 txtresult1.Text = result.ToString();
                 _currentInput = result.ToString();
@@ -109,18 +124,31 @@
                 operand2 = 0;
             }
 
-            // Perform operation (only + implemented)
-            if (oprinput == "+")
+            // Perform operation
+            switch (oprinput)
             {
-                result = operand1 + operand2;
-            }
-            else
-            {
-                result = operand1 + operand2;
+                case "+":
+                    result = operand1 + operand2;
+                    break;
+                case "-":
+                    result = operand1 - operand2;
+                    break;
+                case "*":
+                    result = operand1 * operand2;
+                    break;
+                case "/":
+                    // division by zero: do nothing
+                    if (operand2 == 0)
+                        return;
+                    result = operand1 / operand2;
+                    break;
+                default:
+                    result = operand1 + operand2;
+                    break;
             }
 
-            // Display without spaces
-            var expr = operand1.ToString() + oprinput + operand2.ToString() + "=" + result.ToString();
+            // Display without spaces, show × and ÷ symbols for * and /
+            var expr = operand1.ToString() + DisplayOperator(oprinput) + operand2.ToString() + "=" + result.ToString();
             txtinput1.Text = expr;
             txtresult1.Text = result.ToString();
 
@@ -234,9 +262,9 @@
             // Prevent duplicate operator: if operator already set and no current input, replace it
             if (!string.IsNullOrEmpty(oprinput) && string.IsNullOrEmpty(_currentInput))
             {
-                // replace last operator in expression
+                // replace last operator in expression (use display symbol)
                 if (!string.IsNullOrEmpty(_expression))
-                    _expression = _expression[..^1] + op;
+                    _expression = _expression[..^1] + DisplayOperator(op);
                 oprinput = op;
                 txtinput1.Text = _expression;
                 return;
@@ -257,11 +285,22 @@
             }
 
             oprinput = op;
-            _expression += op;
+            _expression += DisplayOperator(op);
             txtinput1.Text = _expression;
             // 현재 입력 초기화해서 두번째 피연산자 입력 준비
             _currentInput = string.Empty;
             txtresult1.Text = string.Empty;
+        }
+
+        // Map internal operator to display symbol
+        private string DisplayOperator(string op)
+        {
+            return op switch
+            {
+                "*" => "×",
+                "/" => "÷",
+                _ => op,
+            };
         }
 
         // 키보드 입력 처리: 숫자, +, Enter(=), Backspace
@@ -278,6 +317,27 @@
             if (e.KeyChar == '+')
             {
                 SetOperator("+");
+                e.Handled = true;
+                return;
+            }
+
+            if (e.KeyChar == '-')
+            {
+                SetOperator("-");
+                e.Handled = true;
+                return;
+            }
+
+            if (e.KeyChar == '*')
+            {
+                SetOperator("*");
+                e.Handled = true;
+                return;
+            }
+
+            if (e.KeyChar == '/')
+            {
+                SetOperator("/");
                 e.Handled = true;
                 return;
             }
