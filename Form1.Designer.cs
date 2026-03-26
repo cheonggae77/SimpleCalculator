@@ -63,6 +63,7 @@
             btnC.TabIndex = 0;
             btnC.Text = "C";
             btnC.UseVisualStyleBackColor = true;
+            btnC.Click += btnC_Click;
             // 
             // btndivied
             // 
@@ -85,6 +86,7 @@
             btnDEL.TabIndex = 6;
             btnDEL.Text = "DEL";
             btnDEL.UseVisualStyleBackColor = true;
+            btnDEL.Click += btnDEL_Click;
             // 
             // btnCE
             // 
@@ -96,6 +98,7 @@
             btnCE.TabIndex = 7;
             btnCE.Text = "CE";
             btnCE.UseVisualStyleBackColor = true;
+            btnCE.Click += btnCE_Click;
             // 
             // btnnum2
             // 
@@ -179,6 +182,7 @@
             btnminus.TabIndex = 13;
             btnminus.Text = "-";
             btnminus.UseVisualStyleBackColor = true;
+            // subtraction not implemented yet
             // 
             // btnnum4
             // 
@@ -226,6 +230,7 @@
             btnmultiplied.TabIndex = 17;
             btnmultiplied.Text = "×";
             btnmultiplied.UseVisualStyleBackColor = true;
+            // multiplication not implemented yet
             // 
             // btnnum7
             // 
@@ -250,6 +255,7 @@
             btnnum0.Text = "0";
             btnnum0.UseVisualStyleBackColor = true;
             btnnum0.Click += btnnum0_Click;
+
             // 
             // btnpoint
             // 
@@ -260,6 +266,7 @@
             btnpoint.TabIndex = 22;
             btnpoint.Text = ".";
             btnpoint.UseVisualStyleBackColor = true;
+            // decimal point not implemented
             // 
             // btneq
             // 
@@ -270,6 +277,7 @@
             btneq.TabIndex = 21;
             btneq.Text = "=";
             btneq.UseVisualStyleBackColor = true;
+            btneq.Click += btneq_Click;
             // 
             // btnpm
             // 
@@ -280,6 +288,7 @@
             btnpm.TabIndex = 20;
             btnpm.Text = "+/-";
             btnpm.UseVisualStyleBackColor = true;
+            btnpm.Click += btnpm_Click;
             // 
             // lbltitle
             // 
@@ -299,6 +308,7 @@
             txtinput1.Name = "txtinput1";
             txtinput1.Size = new Size(398, 52);
             txtinput1.TabIndex = 25;
+            txtinput1.ReadOnly = true;
             // 
             // txtresult1
             // 
@@ -307,6 +317,7 @@
             txtresult1.Name = "txtresult1";
             txtresult1.Size = new Size(398, 52);
             txtresult1.TabIndex = 26;
+            txtresult1.ReadOnly = true;
             // 
             // Form1
             // 
@@ -338,6 +349,8 @@
             Controls.Add(btnC);
             Name = "Form1";
             Text = "Form1";
+            KeyPreview = true;
+            KeyPress += Form1_KeyPress;
             ResumeLayout(false);
             PerformLayout();
         }

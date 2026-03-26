@@ -1,10 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿# (C# 코딩) 심플 사칙연산기
+## 개요
+- C# 프로그래밍 학습
+- 1줄 소개: 사용자 키보드 입력을 받아서 처리하는 프로그램
+- 사용한 플랫폼:
+- C#, .NET Windows Forms, Visual Studio, GitHub
+- 사용한 컨트롤:
+- Label, TextBox, Button
+- 사용한 기술과 구현한 기능:
+- Visual Studio를 이용하여 UI 디자인
+- 버튼을 이용해 텍스트 박스에 숫자 및 기호 입력
 
-namespace SimpleCalculator
-{
-    class README
-    {
-    }
-}
+## 실행 화면 (과제1)
+- 과제1 코드의 실행 스크린샷
+
+![과제1 실행화면](img/lec1_1.png)
+
+![과제1 실행화면](img/lec1_2.png)
+
+![과제1 실행화면](img/lec1_3.png)
+
+- 과제 내용
+1. UI 구성
+▶ TextBox(입력표시, 결과표시), Button(계산) 등을 적절히 배치합니다. 
+2. 숫자 입력 기능
+▶ 숫자 Button 클릭 시 TextBox에 표시합니다.
+3. 사칙연산 계산 기능
+▶ 2개의 피연산자의 입력값을 Int로 바꾸어 더하기 계산을 수행하고 그 결과를 저장합니다. 
+4. 계산 결과 출력
+▶ 계산 결과 값을 문자열로 변환하여 표시합니다. 
+- 구현 내용과 기능 설명
+1. UI 구성을 도구상자에서 Label, TextBox, Button을 드래그하여 배치하였습니다.
+2. 숫자 Button 클릭 시 TextBox에 표시하는 기능은 Button의 Click 이벤트 핸들러에서 TextBox의 Text 속성에 숫자를 추가하는 방식으로 구현하였습니다.
+3. 사칙연산 계산 기능은 Button의 Click 이벤트 핸들러에서 TextBox에 입력된 값을 Int로 변환하여 계산을 수행하였습니다. 예를 들어, 더하기 계산의 경우 두 피연산자의 값을 Int로 변환한 후 더하기 연산을 수행하여 결과를 저장하였습니다.
+4. 계산 결과 출력은 계산이 완료된 후 결과 값을 문자열로 변환하여 TextBox에 표시하는 방식으로 구현하였습니다. 예를 들어, 계산 결과를 ToString() 메서드를 사용하여 문자열로 변환한 후 TextBox의 Text 속성에 할당하여 출력하였습니다.
+
+
+
