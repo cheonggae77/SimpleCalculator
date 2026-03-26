@@ -362,6 +362,8 @@
             Controls.Add(btndivied);
             Controls.Add(btnC);
             KeyPreview = true;
+            // Make Enter trigger the equals button
+            AcceptButton = btneq;
             Name = "Form1";
             Text = "Form1";
             KeyPress += Form1_KeyPress;

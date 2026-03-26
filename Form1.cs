@@ -21,8 +21,8 @@
         private long _repeatNumerator = 0;
         private long _repeatDenominator = 1;
         private int _repeatCount = 0;
-        // whether a leading zero has been shown for the current operand
-        private bool _leadingZeroDisplayed = false;
+        private bool _leadingZeroShown = false;
+        private bool _isError = false;
 
 
         public Form1()
@@ -147,20 +147,17 @@
                 return;
             }
 
-            // If current input is empty (operator was last input), show last operand as result
+            // If current input is empty (operator was last input), do not copy operand1 to operand2.
+            // But if a leading zero was shown and operator is division, show an error message.
             if (string.IsNullOrEmpty(_currentInput))
             {
-                result = operand1;
-                var exprEmptyOperand = operand1.ToString() + DisplayOperator(oprinput) + "=" + result.ToString();
-                txtinput1.Text = exprEmptyOperand;
-                txtresult1.Text = result.ToString();
-                _currentInput = result.ToString();
-                _expression = exprEmptyOperand;
-                oprinput = string.Empty;
-                operand1 = result;
-                _isResultDisplayed = true;
-                // clear last operation
-                _hasLastOperation = false;
+                if (_leadingZeroShown && oprinput == "/")
+                {
+                    txtresult1.Text = "0으로 나눌수 없습니다.";
+                    txtresult1.ForeColor = System.Drawing.Color.Red;
+                    _isError = true;
+                }
+                // otherwise do nothing
                 return;
             }
 
@@ -226,6 +223,9 @@
             operand1 = operand2 = result = 0;
             txtinput1.Text = string.Empty;
             txtresult1.Text = string.Empty;
+            txtresult1.ForeColor = System.Drawing.Color.Black;
+            _leadingZeroShown = false;
+            _isError = false;
             _isResultDisplayed = false;
         }
 
@@ -258,12 +258,11 @@
                 // 결과 표시 중에는 CE 동작하지 않음
                 return;
             }
-
             _expression = string.Empty;
             if (!string.IsNullOrEmpty(oprinput))
             {
-                // expression에는 operand1와 연산자가 있어야 함
-                _expression = operand1.ToString() + oprinput;
+                // expression에는 operand1와 연산자가 있어야 함 (표시 기호로 변환)
+                _expression = operand1.ToString() + DisplayOperator(oprinput);
             }
             _currentInput = string.Empty;
             txtinput1.Text = _expression;
@@ -302,30 +301,36 @@
             if (_isResultDisplayed)
                 return; // 결과가 표시된 상태에서는 추가 입력 금지
 
-            // 처음 입력 시 '0'이 들어가지 않도록 처리
-            if (string.IsNullOrEmpty(_currentInput))
+            // If an error message is shown, clear it when user starts typing a digit
+            if (_isError)
             {
-                if (d == "0")
-                {
-                    // Show leading zero only once in txtresult1, do not append to txtinput1 yet
-                    if (!_leadingZeroDisplayed)
-                    {
-                        txtresult1.Text = "0";
-                        _leadingZeroDisplayed = true;
-                    }
-                    return;
-                }
+                btnC_Click(this, EventArgs.Empty);
+                // continue to process the digit
+            }
 
-                // first non-zero digit: replace leading zero in result and append to both
+            // 처음 입력 시 '0'이 들어가는 처리: txtresult1에는 한 번만 0 표시, txtinput1에는 추가하지 않음
+            if (string.IsNullOrEmpty(_currentInput) && d == "0")
+            {
+                if (!_leadingZeroShown)
+                {
+                    txtresult1.Text = "0";
+                    _leadingZeroShown = true;
+                }
+                return;
+            }
+
+            // 첫 입력이 0으로 이미 표시되어 있고 사용자가 0이 아닌 숫자를 입력하면
+            // txtresult1의 0을 제거하고 실제 숫자로 교체, txtinput1에도 추가
+            if (string.IsNullOrEmpty(_currentInput) && _leadingZeroShown && d != "0")
+            {
                 _currentInput = d;
                 _expression += d;
                 txtinput1.Text = _expression;
                 txtresult1.Text = _currentInput;
-                _leadingZeroDisplayed = false;
+                _leadingZeroShown = false;
                 return;
             }
 
-            // normal append when current input is non-empty
             _currentInput += d;
             _expression += d;
             txtinput1.Text = _expression;
@@ -341,6 +346,9 @@
                 _isResultDisplayed = false;
             }
 
+            // clear any leading zero shown when operator pressed
+            _leadingZeroShown = false;
+
             // If operator pressed first (no current input and empty expression),
             // treat first operand as 0 and show "0<op>" in input display.
             if (string.IsNullOrEmpty(_currentInput) && string.IsNullOrEmpty(_expression))
@@ -353,7 +361,6 @@
                 _currentInput = string.Empty;
                 // show the first operand (0) in result box
                 txtresult1.Text = operand1.ToString();
-                _leadingZeroDisplayed = true;
                 return;
             }
 
