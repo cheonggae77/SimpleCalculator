@@ -1,0 +1,371 @@
+﻿namespace SimpleCalculator
+{
+    partial class Form1
+    {
+        /// <summary>
+        ///  Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        ///  Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            btnC = new Button();
+            btndivied = new Button();
+            btnDEL = new Button();
+            btnCE = new Button();
+            btnnum2 = new Button();
+            btnnum3 = new Button();
+            btnplus = new Button();
+            btnnum1 = new Button();
+            btnnum5 = new Button();
+            btnnum6 = new Button();
+            btnminus = new Button();
+            btnnum4 = new Button();
+            btnnum8 = new Button();
+            btnnum9 = new Button();
+            btnmultiplied = new Button();
+            btnnum7 = new Button();
+            btnnum0 = new Button();
+            btnpoint = new Button();
+            btneq = new Button();
+            btnpm = new Button();
+            lbltitle = new Label();
+            txtinput1 = new TextBox();
+            txtresult1 = new TextBox();
+            SuspendLayout();
+            // 
+            // btnC
+            // 
+            btnC.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnC.ForeColor = Color.Black;
+            btnC.Location = new Point(77, 245);
+            btnC.Name = "btnC";
+            btnC.Size = new Size(95, 46);
+            btnC.TabIndex = 0;
+            btnC.Text = "C";
+            btnC.UseVisualStyleBackColor = true;
+            // 
+            // btndivied
+            // 
+            btndivied.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btndivied.ForeColor = Color.Red;
+            btndivied.Location = new Point(380, 245);
+            btndivied.Name = "btndivied";
+            btndivied.Size = new Size(95, 46);
+            btndivied.TabIndex = 5;
+            btndivied.Text = "÷";
+            btndivied.UseVisualStyleBackColor = true;
+            // 
+            // btnDEL
+            // 
+            btnDEL.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnDEL.ForeColor = Color.Black;
+            btnDEL.Location = new Point(279, 245);
+            btnDEL.Name = "btnDEL";
+            btnDEL.Size = new Size(95, 46);
+            btnDEL.TabIndex = 6;
+            btnDEL.Text = "DEL";
+            btnDEL.UseVisualStyleBackColor = true;
+            // 
+            // btnCE
+            // 
+            btnCE.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnCE.ForeColor = Color.Black;
+            btnCE.Location = new Point(178, 245);
+            btnCE.Name = "btnCE";
+            btnCE.Size = new Size(95, 46);
+            btnCE.TabIndex = 7;
+            btnCE.Text = "CE";
+            btnCE.UseVisualStyleBackColor = true;
+            // 
+            // btnnum2
+            // 
+            btnnum2.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum2.ForeColor = Color.Blue;
+            btnnum2.Location = new Point(178, 401);
+            btnnum2.Name = "btnnum2";
+            btnnum2.Size = new Size(95, 46);
+            btnnum2.TabIndex = 11;
+            btnnum2.Text = "2";
+            btnnum2.UseVisualStyleBackColor = true;
+            btnnum2.Click += btnnum2_Click;
+            // 
+            // btnnum3
+            // 
+            btnnum3.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum3.ForeColor = Color.Blue;
+            btnnum3.Location = new Point(279, 401);
+            btnnum3.Name = "btnnum3";
+            btnnum3.Size = new Size(95, 46);
+            btnnum3.TabIndex = 10;
+            btnnum3.Text = "3";
+            btnnum3.UseVisualStyleBackColor = true;
+            btnnum3.Click += btnnum3_Click;
+            // 
+            // btnplus
+            // 
+            btnplus.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnplus.ForeColor = Color.Red;
+            btnplus.Location = new Point(380, 401);
+            btnplus.Name = "btnplus";
+            btnplus.Size = new Size(95, 46);
+            btnplus.TabIndex = 9;
+            btnplus.Text = "+";
+            btnplus.UseVisualStyleBackColor = true;
+            btnplus.Click += btnplus_Click;
+            // 
+            // btnnum1
+            // 
+            btnnum1.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum1.ForeColor = Color.Blue;
+            btnnum1.Location = new Point(77, 401);
+            btnnum1.Name = "btnnum1";
+            btnnum1.Size = new Size(95, 46);
+            btnnum1.TabIndex = 8;
+            btnnum1.Text = "1";
+            btnnum1.UseVisualStyleBackColor = true;
+            btnnum1.Click += btnnum1_Click;
+            // 
+            // btnnum5
+            // 
+            btnnum5.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum5.ForeColor = Color.Blue;
+            btnnum5.Location = new Point(178, 349);
+            btnnum5.Name = "btnnum5";
+            btnnum5.Size = new Size(95, 46);
+            btnnum5.TabIndex = 15;
+            btnnum5.Text = "5";
+            btnnum5.UseVisualStyleBackColor = true;
+            btnnum5.Click += btnnum5_Click;
+            // 
+            // btnnum6
+            // 
+            btnnum6.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum6.ForeColor = Color.Blue;
+            btnnum6.Location = new Point(279, 349);
+            btnnum6.Name = "btnnum6";
+            btnnum6.Size = new Size(95, 46);
+            btnnum6.TabIndex = 14;
+            btnnum6.Text = "6";
+            btnnum6.UseVisualStyleBackColor = true;
+            btnnum6.Click += btnnum6_Click;
+            // 
+            // btnminus
+            // 
+            btnminus.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnminus.ForeColor = Color.Red;
+            btnminus.Location = new Point(380, 349);
+            btnminus.Name = "btnminus";
+            btnminus.Size = new Size(95, 46);
+            btnminus.TabIndex = 13;
+            btnminus.Text = "-";
+            btnminus.UseVisualStyleBackColor = true;
+            // 
+            // btnnum4
+            // 
+            btnnum4.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum4.ForeColor = Color.Blue;
+            btnnum4.Location = new Point(77, 349);
+            btnnum4.Name = "btnnum4";
+            btnnum4.Size = new Size(95, 46);
+            btnnum4.TabIndex = 12;
+            btnnum4.Text = "4";
+            btnnum4.UseVisualStyleBackColor = true;
+            btnnum4.Click += btnnum4_Click;
+            // 
+            // btnnum8
+            // 
+            btnnum8.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum8.ForeColor = Color.Blue;
+            btnnum8.Location = new Point(178, 297);
+            btnnum8.Name = "btnnum8";
+            btnnum8.Size = new Size(95, 46);
+            btnnum8.TabIndex = 19;
+            btnnum8.Text = "8";
+            btnnum8.UseVisualStyleBackColor = true;
+            btnnum8.Click += btnnum8_Click;
+            // 
+            // btnnum9
+            // 
+            btnnum9.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum9.ForeColor = Color.Blue;
+            btnnum9.Location = new Point(279, 297);
+            btnnum9.Name = "btnnum9";
+            btnnum9.Size = new Size(95, 46);
+            btnnum9.TabIndex = 18;
+            btnnum9.Text = "9";
+            btnnum9.UseVisualStyleBackColor = true;
+            btnnum9.Click += btnnum9_Click;
+            // 
+            // btnmultiplied
+            // 
+            btnmultiplied.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnmultiplied.ForeColor = Color.Red;
+            btnmultiplied.Location = new Point(380, 297);
+            btnmultiplied.Name = "btnmultiplied";
+            btnmultiplied.Size = new Size(95, 46);
+            btnmultiplied.TabIndex = 17;
+            btnmultiplied.Text = "×";
+            btnmultiplied.UseVisualStyleBackColor = true;
+            // 
+            // btnnum7
+            // 
+            btnnum7.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum7.ForeColor = Color.Blue;
+            btnnum7.Location = new Point(77, 297);
+            btnnum7.Name = "btnnum7";
+            btnnum7.Size = new Size(95, 46);
+            btnnum7.TabIndex = 16;
+            btnnum7.Text = "7";
+            btnnum7.UseVisualStyleBackColor = true;
+            btnnum7.Click += btnnum7_Click;
+            // 
+            // btnnum0
+            // 
+            btnnum0.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnnum0.ForeColor = Color.Blue;
+            btnnum0.Location = new Point(178, 453);
+            btnnum0.Name = "btnnum0";
+            btnnum0.Size = new Size(95, 46);
+            btnnum0.TabIndex = 23;
+            btnnum0.Text = "0";
+            btnnum0.UseVisualStyleBackColor = true;
+            btnnum0.Click += btnnum0_Click;
+            // 
+            // btnpoint
+            // 
+            btnpoint.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnpoint.Location = new Point(279, 453);
+            btnpoint.Name = "btnpoint";
+            btnpoint.Size = new Size(95, 46);
+            btnpoint.TabIndex = 22;
+            btnpoint.Text = ".";
+            btnpoint.UseVisualStyleBackColor = true;
+            // 
+            // btneq
+            // 
+            btneq.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btneq.Location = new Point(380, 453);
+            btneq.Name = "btneq";
+            btneq.Size = new Size(95, 46);
+            btneq.TabIndex = 21;
+            btneq.Text = "=";
+            btneq.UseVisualStyleBackColor = true;
+            // 
+            // btnpm
+            // 
+            btnpm.Font = new Font("휴먼둥근헤드라인", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 129);
+            btnpm.Location = new Point(77, 453);
+            btnpm.Name = "btnpm";
+            btnpm.Size = new Size(95, 46);
+            btnpm.TabIndex = 20;
+            btnpm.Text = "+/-";
+            btnpm.UseVisualStyleBackColor = true;
+            // 
+            // lbltitle
+            // 
+            lbltitle.AutoSize = true;
+            lbltitle.Font = new Font("맑은 고딕", 20F);
+            lbltitle.ForeColor = Color.FromArgb(255, 128, 0);
+            lbltitle.Location = new Point(77, 39);
+            lbltitle.Name = "lbltitle";
+            lbltitle.Size = new Size(288, 46);
+            lbltitle.TabIndex = 24;
+            lbltitle.Text = "Simple Calculator";
+            // 
+            // txtinput1
+            // 
+            txtinput1.Font = new Font("맑은 고딕", 20F);
+            txtinput1.Location = new Point(77, 112);
+            txtinput1.Name = "txtinput1";
+            txtinput1.Size = new Size(398, 52);
+            txtinput1.TabIndex = 25;
+            // 
+            // txtresult1
+            // 
+            txtresult1.Font = new Font("맑은 고딕", 20F);
+            txtresult1.Location = new Point(77, 170);
+            txtresult1.Name = "txtresult1";
+            txtresult1.Size = new Size(398, 52);
+            txtresult1.TabIndex = 26;
+            // 
+            // Form1
+            // 
+            AutoScaleDimensions = new SizeF(9F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(569, 579);
+            Controls.Add(txtresult1);
+            Controls.Add(txtinput1);
+            Controls.Add(lbltitle);
+            Controls.Add(btnnum0);
+            Controls.Add(btnpoint);
+            Controls.Add(btneq);
+            Controls.Add(btnpm);
+            Controls.Add(btnnum8);
+            Controls.Add(btnnum9);
+            Controls.Add(btnmultiplied);
+            Controls.Add(btnnum7);
+            Controls.Add(btnnum5);
+            Controls.Add(btnnum6);
+            Controls.Add(btnminus);
+            Controls.Add(btnnum4);
+            Controls.Add(btnnum2);
+            Controls.Add(btnnum3);
+            Controls.Add(btnplus);
+            Controls.Add(btnnum1);
+            Controls.Add(btnCE);
+            Controls.Add(btnDEL);
+            Controls.Add(btndivied);
+            Controls.Add(btnC);
+            Name = "Form1";
+            Text = "Form1";
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        #endregion
+
+        private Button btnC;
+        private Button btndivied;
+        private Button btnDEL;
+        private Button btnCE;
+        private Button btnnum2;
+        private Button btnnum3;
+        private Button btnplus;
+        private Button btnnum1;
+        private Button btnnum5;
+        private Button btnnum6;
+        private Button btnminus;
+        private Button btnnum4;
+        private Button btnnum8;
+        private Button btnnum9;
+        private Button btnmultiplied;
+        private Button btnnum7;
+        private Button btnnum0;
+        private Button btnpoint;
+        private Button btneq;
+        private Button btnpm;
+        private Label lbltitle;
+        private TextBox txtinput1;
+        private TextBox txtresult1;
+    }
+}
